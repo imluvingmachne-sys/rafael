@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rafael para Windows</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Rafael, assistente de voz para Windows: responde por voz, pesquisa na internet, abre seus programas e cria seus arquivos. Grátis.">
+<link rel="icon" href="icone.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Silkscreen&family=DotGothic16&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+  /* Layout: uma coluna estreita como o menu do app; o cristal no topo, caixas [ ] em grade, faixa de instalação numerada. */
+  :root {
+    --bg: #06110c;          /* verde-escuro do menu do Rafael */
+    --bg2: #0c1f16;
+    --line: rgba(170, 228, 190, .22);
+    --line-strong: rgba(170, 228, 190, .6);
+    --fg: #dff3e5;
+    --dim: #8fb19c;
+    --acc: #aae4be;          /* o verde-claro do cristal */
+    --acc-rgb: 170, 228, 190;
+    --warn: #f2c27b;
+    --font-display: "DotGothic16", "Silkscreen", "Segoe UI", sans-serif;
+    --font-label: "Silkscreen", "DotGothic16", "Segoe UI", sans-serif;
+    --font-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--bg); }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 17px/1.6 var(--font-body);
+    padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  a { color: var(--acc); }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--acc); outline-offset: 3px; }
+  .wrap { max-width: 980px; margin: 0 auto; }
+  #dust { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+  main { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 88px; padding-block: 28px 56px; }
+
+  /* Topo */
+  .top { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;
+    font: 12px var(--font-label); letter-spacing: .3em; color: var(--dim); }
+  .top a { color: var(--dim); text-decoration: none; letter-spacing: .15em; }
+  .top a:hover { color: var(--fg); }
+
+  /* Hero */
+  .hero { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 32px; align-items: center; }
+  .crystal { width: 100%; aspect-ratio: 1; max-width: 420px; justify-self: center; display: block; }
+  .eyebrow { font: 12px var(--font-label); letter-spacing: .35em; color: var(--dim); margin: 0 0 10px; }
+  h1 { font: 400 clamp(56px, 11vw, 104px)/.95 var(--font-display); letter-spacing: .12em; margin: 0;
+    text-shadow: 0 0 24px rgba(var(--acc-rgb), .35); }
+  .lede { font-size: 19px; color: var(--fg); max-width: 34ch; margin: 18px 0 26px; text-wrap: pretty; }
+  .cta { display: flex; flex-wrap: wrap; gap: 14px 22px; align-items: center; }
+  .meta { font-size: 14px; color: var(--dim); }
+
+  /* Botão em colchetes, igual às caixas do app */
+  .br { position: relative; display: inline-flex; align-items: center; gap: 10px; padding: 12px 26px;
+    font: 15px var(--font-label); letter-spacing: .12em; color: var(--fg); background: rgba(var(--acc-rgb), .07);
+    border: 0; text-decoration: none; cursor: pointer; transition: color .2s, background .2s, text-shadow .2s; }
+  .br::before, .br::after { content: ""; position: absolute; top: 0; bottom: 0; width: 9px; border: 1.5px solid var(--line-strong); }
+  .br::before { left: 0; border-right: 0; }
+  .br::after { right: 0; border-left: 0; }
+  .br:hover { color: #fff; background: rgba(var(--acc-rgb), .14); text-shadow: 0 0 10px rgba(var(--acc-rgb), .9); }
+  .br:hover::before, .br:hover::after { border-color: #fff; }
+  .br.big { font-size: 17px; padding: 16px 34px; }
+
+  h2 { font: 400 15px var(--font-label); letter-spacing: .4em; text-align: center; margin: 0 0 30px; color: var(--fg);
+    text-wrap: balance; }
+  h2 small { display: block; font: 15px var(--font-body); letter-spacing: 0; color: var(--dim); margin-top: 10px; }
+
+  /* Caixas do que ele faz */
+  .boxes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+  .box { position: relative; padding: 20px 22px 22px; min-width: 0; }
+  .box::before, .box::after { content: ""; position: absolute; top: 0; bottom: 0; width: 12px; border: 1px solid var(--line); }
+  .box::before { left: 0; border-right: 0; }
+  .box::after { right: 0; border-left: 0; }
+  .box h3 { font: 400 13px var(--font-label); letter-spacing: .14em; margin: 0 0 8px; color: var(--acc); }
+  .box p { margin: 0; font-size: 15.5px; color: var(--fg); }
+  .box .say { display: block; margin-top: 10px; font-size: 14px; color: var(--dim); font-style: italic; }
+
+  /* Exemplos de comandos */
+  .cmds { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 28px; max-width: 860px; margin: 0 auto; }
+  .cmd { display: flex; gap: 12px; align-items: baseline; padding: 10px 0; border-bottom: 1px dashed var(--line); min-width: 0; }
+  .cmd b { font: 400 12px var(--font-label); color: var(--acc); letter-spacing: .1em; flex: none; }
+  .cmd span { min-width: 0; }
+
+  /* Cérebros */
+  .brains { width: 100%; border-collapse: collapse; font-size: 15.5px; }
+  .tablewrap { overflow-x: auto; max-width: 860px; margin: 0 auto; }
+  .brains th, .brains td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .brains th { font: 400 12px var(--font-label); letter-spacing: .14em; color: var(--dim); }
+  .brains td:first-child { color: var(--acc); white-space: nowrap; }
+  .tag { font: 400 11px var(--font-label); letter-spacing: .1em; padding: 2px 8px; border: 1px solid var(--line-strong); color: var(--acc); white-space: nowrap; }
+
+  /* Instalação: é uma sequência de verdade, por isso numerada */
+  .steps { list-style: none; counter-reset: s; padding: 0; margin: 0 auto; max-width: 760px; display: flex; flex-direction: column; gap: 6px; }
+  .steps li { counter-increment: s; display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 14px; padding: 14px 0; border-bottom: 1px dashed var(--line); }
+  .steps li::before { content: counter(s); font: 400 26px/1 var(--font-display); color: var(--acc); }
+  .steps strong { display: block; margin-bottom: 2px; }
+  .steps p { margin: 0; color: var(--dim); font-size: 15.5px; }
+  .warnbox { max-width: 760px; margin: 22px auto 0; padding: 16px 20px; border: 1px solid rgba(242, 194, 123, .45);
+    background: rgba(242, 194, 123, .06); color: var(--fg); font-size: 15.5px; }
+  .warnbox b { color: var(--warn); font-weight: 700; }
+
+  /* Requisitos */
+  .reqs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 28px; max-width: 860px; margin: 0 auto; }
+  .req { display: flex; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 15.5px; min-width: 0; }
+  .req span:first-child { color: var(--dim); }
+  .req span:last-child { text-align: right; }
+
+  /* Perguntas */
+  .faq { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; }
+  details { border-bottom: 1px solid var(--line); padding: 4px 0; }
+  summary { cursor: pointer; padding: 12px 0; font-weight: 700; list-style: none; display: flex; justify-content: space-between; gap: 12px; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; font-family: var(--font-label); color: var(--acc); }
+  details[open] summary::after { content: "−"; }
+  details p { margin: 0 0 14px; color: var(--dim); font-size: 15.5px; }
+
+  .final { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+  .final p { margin: 0; color: var(--dim); }
+  .note { font-size: 13.5px; color: var(--dim); text-align: center; margin: 0; }
+  footer { border-top: 1px solid var(--line); padding-top: 22px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px;
+    font-size: 13.5px; color: var(--dim); }
+
+  @media (max-width: 760px) {
+    main { gap: 64px; }
+    .hero { grid-template-columns: 1fr; }
+    .crystal { max-width: 280px; order: -1; }
+    .boxes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .cmds, .reqs { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 460px) { .boxes { grid-template-columns: 1fr; } }
+  @media (prefers-reduced-motion: reduce) { .br { transition: none; } }
+</style>
+</head>
+<body>
+
+<canvas id="dust" aria-hidden="true"></canvas>
+<div class="wrap">
+<main>
+  <nav class="top" aria-label="Seções">
+    <span>RAFAEL · v27</span>
+    <span><a href="#faz">O QUE FAZ</a> · <a href="#instalar">INSTALAR</a> · <a href="#perguntas">PERGUNTAS</a></span>
+  </nav>
+
+  <section class="hero">
+    <div>
+      <p class="eyebrow">ARCANJO DO CONHECIMENTO</p>
+      <h1>RAFAEL</h1>
+      <p class="lede">Um assistente de voz para o seu Windows. Diga "Rafael" e ele responde, pesquisa na internet, abre seus programas e cria seus arquivos. O que é seu fica no seu computador.</p>
+      <div class="cta">
+        <a class="br big" href="https://github.com/imluvingmachne-sys/rafael/releases/latest/download/Rafael-Windows.zip" id="dl">BAIXAR O RAFAEL</a>
+        <span class="meta">Windows 10 e 11 · grátis · cerca de 125 MB</span>
+      </div>
+    </div>
+    <canvas class="crystal" id="crystal" role="img" aria-label="O cristal do Rafael, um icosaedro de luz girando"></canvas>
+  </section>
+
+  <section id="faz">
+    <h2>O QUE ELE FAZ<small>Cada caixa é uma das telas do menu do Rafael.</small></h2>
+    <div class="boxes">
+      <div class="box"><h3>[ VOZ ]</h3><p>Fica ouvindo em segundo plano. Você chama pelo nome, ele responde em voz alta em português. Para interromper: "Rafael, para".</p><span class="say">"Rafael, que horas são em Tóquio?"</span></div>
+      <div class="box"><h3>[ INTERNET ]</h3><p>Notícias, placares de futebol ao vivo, cotação do dólar e do bitcoin, Wikipédia e vídeos do YouTube, sempre do dia.</p><span class="say">"Rafael, o Cruzeiro joga hoje?"</span></div>
+      <div class="box"><h3>[ COMPUTADOR ]</h3><p>Abre e fecha programas, jogos e sites, mexe nas janelas e nas abas. Antes de fechar um jogo, ele pede "confirmo".</p><span class="say">"Rafael, abre o Spotify"</span></div>
+      <div class="box"><h3>[ ARQUIVOS ]</h3><p>Cria apresentações, documentos e planilhas com conteúdo pesquisado, e imagens com crédito quando você pede.</p><span class="say">"Rafael, faz uma apresentação sobre o Egito antigo com imagens"</span></div>
+      <div class="box"><h3>[ MEMÓRIA ]</h3><p>Lembretes com aviso do Windows, notas, fatos que você pede para ele guardar e a conversa das últimas duas horas.</p><span class="say">"Rafael, me lembra de beber água às 15h"</span></div>
+      <div class="box"><h3>[ OFICINA ]</h3><p>Escreve pequenos programas para tarefas chatas, como organizar a pasta Downloads. Mostra o código e só roda se você disser "confirmo".</p><span class="say">"Rafael, organiza meus downloads por tipo"</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>DIGA, POR EXEMPLO</h2>
+    <div class="cmds">
+      <div class="cmd"><b>CLIMA</b><span>"Rafael, vai chover no fim de semana?"</span></div>
+      <div class="cmd"><b>MÚSICA</b><span>"Rafael, próxima música" · "volume em 30"</span></div>
+      <div class="cmd"><b>TELA</b><span>"Rafael, o que significa esse erro na minha tela?"</span></div>
+      <div class="cmd"><b>JOGO</b><span>"Rafael, modo jogo" libera a placa de vídeo</span></div>
+      <div class="cmd"><b>A FUNDO</b><span>"Rafael, pensa a fundo: vale a pena trocar de placa?"</span></div>
+      <div class="cmd"><b>CÓPIA</b><span>"Rafael, traduz o que eu copiei"</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>DE ONDE VEM A INTELIGÊNCIA<small>Funciona de graça. Os cérebros na nuvem são opcionais, cada um com a sua própria chave.</small></h2>
+    <div class="tablewrap">
+      <table class="brains">
+        <thead><tr><th>CÉREBRO</th><th>ONDE RODA</th><th>CUSTO</th><th>QUANDO USA</th></tr></thead>
+        <tbody>
+          <tr><td>Qwen3 (local)</td><td>Na sua placa de vídeo, pelo Ollama</td><td><span class="tag">GRÁTIS</span></td><td>Sempre disponível, mesmo sem internet. Perguntas sobre seus arquivos ficam só nele.</td></tr>
+          <tr><td>Gemini</td><td>Nuvem do Google</td><td><span class="tag">GRÁTIS COM LIMITE</span></td><td>Perguntas de internet, com a busca do Google. Opcional.</td></tr>
+          <tr><td>Claude Haiku</td><td>Nuvem da Anthropic</td><td><span class="tag">CENTAVOS</span></td><td>O mais esperto no dia a dia. Créditos pré-pagos, cerca de US$ 0,001 por pergunta. Opcional.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="instalar">
+    <h2>INSTALAR</h2>
+    <ol class="steps">
+      <li><div><strong>Instale o Ollama</strong><p>É o programa que roda o cérebro local. Baixe em <a href="https://ollama.com/download/windows" target="_blank" rel="noopener">ollama.com/download/windows</a> e instale normalmente.</p></div></li>
+      <li><div><strong>Baixe o Rafael</strong><p>Clique em "Baixar o Rafael". Vem o arquivo Rafael-Windows.zip, de cerca de 125 MB. Versões anteriores ficam em <a href="https://github.com/imluvingmachne-sys/rafael/releases" target="_blank" rel="noopener">todas as versões</a>.</p></div></li>
+      <li><div><strong>Extraia e abra o INSTALAR.bat</strong><p>Clique com o botão direito no .zip, escolha "Extrair tudo" e dê dois cliques em INSTALAR.bat. Ele cria o atalho Rafael na Área de Trabalho e baixa o cérebro local (cerca de 5 GB, só na primeira vez).</p></div></li>
+      <li><div><strong>Abra pelo atalho Rafael</strong><p>Na primeira vez ele baixa também o reconhecimento de voz (cerca de 480 MB). Depois é só dizer "Rafael".</p></div></li>
+    </ol>
+    <p class="warnbox"><b>Aviso do Windows.</b> Ao abrir, pode aparecer "O Windows protegeu o computador". Isso acontece com programas sem assinatura digital paga. Clique em "Mais informações" e depois em "Executar assim mesmo". Alguns antivírus também desconfiam de programas feitos em Python; é um alarme falso conhecido.</p>
+  </section>
+
+  <section>
+    <h2>REQUISITOS</h2>
+    <div class="reqs">
+      <div class="req"><span>Sistema</span><span>Windows 10 ou 11, 64 bits</span></div>
+      <div class="req"><span>Memória</span><span>8 GB de RAM (16 GB recomendado)</span></div>
+      <div class="req"><span>Placa de vídeo</span><span>Opcional. NVIDIA com 6 GB ou mais deixa tudo rápido</span></div>
+      <div class="req"><span>Espaço</span><span>Cerca de 8 GB com o cérebro e a voz</span></div>
+      <div class="req"><span>Microfone</span><span>Qualquer um. Também dá para escrever</span></div>
+      <div class="req"><span>Internet</span><span>Para a voz, a pesquisa e as atualizações</span></div>
+    </div>
+  </section>
+
+  <section id="perguntas">
+    <h2>PERGUNTAS</h2>
+    <div class="faq">
+      <details><summary>Preciso pagar alguma coisa?</summary><p>Não. O Rafael e o cérebro local são grátis. Só o Claude é pago, e é opcional: você coloca créditos na sua própria conta da Anthropic se quiser respostas mais inteligentes.</p></details>
+      <details><summary>Ele ouve tudo o que eu falo?</summary><p>O reconhecimento de voz roda no seu computador e o áudio não sai dele. O Rafael só registra o que vem depois do nome "Rafael". Dá para pausar a escuta pelo ícone perto do relógio.</p></details>
+      <details><summary>Meus arquivos vão para a internet?</summary><p>Não. Perguntas sobre seus arquivos, histórico dos navegadores e a sua tela são respondidas só pelo cérebro local. Ele nunca lê senhas, cookies ou cartões.</p></details>
+      <details><summary>Ele pesa no meu PC enquanto eu jogo?</summary><p>Em Desempenho você escolhe Máximo, Equilibrado ou Leve, e cada um se adapta à sua placa. Antes de jogar, diga "Rafael, modo jogo" para liberar a placa de vídeo.</p></details>
+      <details><summary>Ele se atualiza sozinho?</summary><p>Sim. Quando sai uma versão nova, ele avisa e mostra o que mudou. Só instala se você clicar, e só aceita pacotes assinados pelo criador. Suas notas e ajustes continuam.</p></details>
+      <details><summary>Ele faz coisas sem eu pedir?</summary><p>Não. Ele só age quando você pede, nunca porque um site ou mensagem mandou, e pede "confirmo" antes de fechar jogos, várias janelas ou rodar um programa da Oficina.</p></details>
+    </div>
+  </section>
+
+  <section class="final">
+    <a class="br big" href="https://github.com/imluvingmachne-sys/rafael/releases/latest/download/Rafael-Windows.zip">BAIXAR O RAFAEL</a>
+    <p>Versão v27 · Windows 10 e 11</p>
+  </section>
+
+  <footer>
+    <span>Rafael · projeto independente</span>
+    <span>Voz e cérebro locais · nada é coletado</span>
+  </footer>
+</main>
+</div>
+
+<script>
+(() => {
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const ACC = [170, 228, 190];
+  const cor = (t, a) => `rgba(${ACC.map(v => Math.round(t >= 0 ? v + (255 - v) * t : v * (1 + t))).join(",")},${a})`;
+
+  // Cristal: o mesmo icosaedro de arame do app, com o núcleo de luz
+  const cv = document.getElementById("crystal"), g = cv.getContext("2d");
+  const PHI = (1 + Math.sqrt(5)) / 2, V = [];
+  for (const a of [-1, 1]) for (const b of [-PHI, PHI]) V.push([0, a, b], [a, b, 0], [b, 0, a]);
+  const E = [];
+  for (let i = 0; i < 12; i++) for (let j = i + 1; j < 12; j++) {
+    const d = V[i].reduce((s, v, k) => s + (v - V[j][k]) ** 2, 0); if (Math.abs(d - 4) < .01) E.push([i, j]);
+  }
+  let W = 0, H = 0, rot = .6, last = 0, mx = 0, my = 0;
+  const fit = () => {
+    const r = cv.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 2);
+    W = r.width; H = r.height; cv.width = W * dpr; cv.height = H * dpr; g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  };
+  addEventListener("resize", fit); fit();
+  addEventListener("pointermove", e => { mx = e.clientX / innerWidth - .5; my = e.clientY / innerHeight - .5; });
+
+  function draw(now) {
+    const dt = last ? Math.min(.05, (now - last) / 1000) : 0; last = now;
+    if (!reduce) rot += dt * .35;
+    const cx = W / 2, cy = H / 2, R = Math.min(W, H) * .36;
+    g.clearRect(0, 0, W, H);
+    g.globalCompositeOperation = "lighter";
+    const halo = g.createRadialGradient(cx, cy, 0, cx, cy, R * 1.45);
+    halo.addColorStop(0, cor(.6, .32)); halo.addColorStop(.35, cor(0, .1)); halo.addColorStop(1, "rgba(0,0,0,0)");
+    g.fillStyle = halo; g.beginPath(); g.arc(cx, cy, R * 1.45, 0, 7); g.fill();
+    const a1 = rot + mx * .6, a2 = .45 + my * .4;
+    const c1 = Math.cos(a1), s1 = Math.sin(a1), c2 = Math.cos(a2), s2 = Math.sin(a2);
+    const P = V.map(([x, y, z]) => {
+      const x1 = x * c1 - z * s1, z1 = x * s1 + z * c1, y1 = y * c2 - z1 * s2, z2 = y * s2 + z1 * c2;
+      const f = 3.4 / (3.4 - z2 * .55); return [cx + x1 * R * .52 * f, cy + y1 * R * .52 * f, z2];
+    });
+    for (const [a, b] of E) {
+      const z = (P[a][2] + P[b][2]) / 2, k = (z + 2) / 4;
+      g.strokeStyle = cor(.3, .12 + .2 * k); g.lineWidth = 5;
+      g.beginPath(); g.moveTo(P[a][0], P[a][1]); g.lineTo(P[b][0], P[b][1]); g.stroke();
+      g.strokeStyle = cor(.8, .45 + .5 * k); g.lineWidth = 1.4; g.stroke();
+    }
+    for (const p of P) { g.fillStyle = cor(.9, .5 + .4 * (p[2] + 2) / 4); g.beginPath(); g.arc(p[0], p[1], 2.2, 0, 7); g.fill(); }
+    const pulse = reduce ? 1 : 1 + .08 * Math.sin(now / 700);
+    const core = g.createRadialGradient(cx, cy, 0, cx, cy, 22 * pulse);
+    core.addColorStop(0, "rgba(255,255,255,1)"); core.addColorStop(.45, cor(.7, .85)); core.addColorStop(1, "rgba(0,0,0,0)");
+    g.fillStyle = core; g.beginPath(); g.arc(cx, cy, 22 * pulse, 0, 7); g.fill();
+    g.globalCompositeOperation = "source-over";
+    requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+
+  // Poeira subindo devagar, como no fundo do menu
+  const dc = document.getElementById("dust"), dg = dc.getContext("2d");
+  const D = Array.from({ length: 60 }, () => ({ x: Math.random(), y: Math.random(), v: .004 + Math.random() * .012,
+    r: .5 + Math.random() * 1.3, a: .08 + Math.random() * .3, p: Math.random() * 7 }));
+  let DW = 0, DH = 0, dl = 0;
+  const dfit = () => { const dpr = Math.min(devicePixelRatio || 1, 2); DW = innerWidth; DH = innerHeight;
+    dc.width = DW * dpr; dc.height = DH * dpr; dc.style.width = DW + "px"; dc.style.height = DH + "px"; dg.setTransform(dpr, 0, 0, dpr, 0, 0); };
+  addEventListener("resize", dfit); dfit();
+  function dust(now) {
+    const dt = dl ? Math.min(.05, (now - dl) / 1000) : 0; dl = now;
+    dg.clearRect(0, 0, DW, DH);
+    for (const d of D) {
+      if (!reduce) { d.y -= d.v * dt; if (d.y < -.02) { d.y = 1.02; d.x = Math.random(); } }
+      dg.fillStyle = cor(.8, d.a * (.6 + .4 * Math.sin(now / 1200 + d.p)));
+      dg.beginPath(); dg.arc(d.x * DW + Math.sin(now / 3000 + d.p) * 6, d.y * DH, d.r, 0, 7); dg.fill();
+    }
+    requestAnimationFrame(dust);
+  }
+  requestAnimationFrame(dust);
+})();
+</script>
+
+</body>
+</html>
