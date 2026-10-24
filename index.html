@@ -69,6 +69,11 @@
   .br.sec:hover { color: #fff; }
   .step-bt { margin-top: 10px; }
   .hero .meta { margin: 14px 0 0; max-width: 46ch; }
+  .cta.opc { margin-top: 14px; }
+  .cta.opc .meta { margin: 0; }
+  .opcbox { max-width: 760px; margin: 22px auto 0; padding: 16px 20px; border: 1px dashed var(--line);
+    display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+  .opcbox p { margin: 0; color: var(--fg); font-size: 15.5px; }
 
   h2 { font: 400 15px var(--font-label); letter-spacing: .4em; text-align: center; margin: 0 0 30px; color: var(--fg);
     text-wrap: balance; }
@@ -160,6 +165,10 @@
         <a class="br sec" href="https://ollama.com/download/windows" target="_blank" rel="noopener">BAIXAR O OLLAMA</a>
       </div>
       <p class="meta">Windows 10 e 11 · grátis · cerca de 135 MB. O Ollama é o programa que roda o cérebro do Rafael: instale os dois.</p>
+      <div class="cta opc">
+        <a class="br sec" href="https://www.python.org/downloads/" target="_blank" rel="noopener">BAIXAR O PYTHON</a>
+        <span class="meta">Opcional: só para os scripts e habilidades da Oficina.</span>
+      </div>
     </div>
     <canvas class="crystal" id="crystal" role="img" aria-label="O cristal do Rafael, um icosaedro de luz girando"></canvas>
   </section>
@@ -211,6 +220,10 @@
       <li><div><strong>Extraia e abra o INSTALAR.bat</strong><p>Clique com o botão direito no .zip, escolha "Extrair tudo" e dê dois cliques em INSTALAR.bat. Ele cria o atalho Rafael na Área de Trabalho e baixa o cérebro local (cerca de 5 GB, só na primeira vez).</p></div></li>
       <li><div><strong>Abra pelo atalho Rafael</strong><p>Na primeira vez ele baixa também o reconhecimento de voz (cerca de 480 MB). Depois é só dizer "Rafael".</p></div></li>
     </ol>
+    <div class="opcbox">
+      <p><b>Opcional: Python, para a Oficina.</b> Os scripts e habilidades da Oficina (como "organiza meus Downloads por tipo") precisam do Python. O resto do Rafael funciona sem ele. Na instalação, deixe marcada a opção "Add python.exe to PATH".</p>
+      <a class="br sec" href="https://www.python.org/downloads/" target="_blank" rel="noopener">BAIXAR O PYTHON</a>
+    </div>
     <p class="warnbox"><b>Aviso do Windows.</b> Ao abrir, pode aparecer "O Windows protegeu o computador". Isso acontece com programas sem assinatura digital paga. Clique em "Mais informações" e depois em "Executar assim mesmo". Alguns antivírus também desconfiam de programas feitos em Python; é um alarme falso conhecido.</p>
   </section>
 
