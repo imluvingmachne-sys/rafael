@@ -63,6 +63,12 @@
   .br:hover { color: #fff; background: rgba(var(--acc-rgb), .14); text-shadow: 0 0 10px rgba(var(--acc-rgb), .9); }
   .br:hover::before, .br:hover::after { border-color: #fff; }
   .br.big { font-size: 17px; padding: 16px 34px; }
+  /* Botão secundário (Ollama): mesmo formato, mais discreto que o do Rafael */
+  .br.sec { font-size: 13px; padding: 12px 22px; background: transparent; color: var(--dim); }
+  .br.sec::before, .br.sec::after { border-color: var(--line); }
+  .br.sec:hover { color: #fff; }
+  .step-bt { margin-top: 10px; }
+  .hero .meta { margin: 14px 0 0; max-width: 46ch; }
 
   h2 { font: 400 15px var(--font-label); letter-spacing: .4em; text-align: center; margin: 0 0 30px; color: var(--fg);
     text-wrap: balance; }
@@ -151,8 +157,9 @@
       <p class="lede">Um assistente de voz para o seu Windows. Diga "Rafael" e ele responde, pesquisa na internet, abre seus programas e cria seus arquivos. O que é seu fica no seu computador.</p>
       <div class="cta">
         <a class="br big" href="https://github.com/imluvingmachne-sys/rafael/releases/latest/download/Rafael-Windows.zip" id="dl">BAIXAR O RAFAEL</a>
-        <span class="meta">Windows 10 e 11 · grátis · cerca de 125 MB</span>
+        <a class="br sec" href="https://ollama.com/download/windows" target="_blank" rel="noopener">BAIXAR O OLLAMA</a>
       </div>
+      <p class="meta">Windows 10 e 11 · grátis · cerca de 135 MB. O Ollama é o programa que roda o cérebro do Rafael: instale os dois.</p>
     </div>
     <canvas class="crystal" id="crystal" role="img" aria-label="O cristal do Rafael, um icosaedro de luz girando"></canvas>
   </section>
@@ -198,8 +205,9 @@
   <section id="instalar">
     <h2>INSTALAR</h2>
     <ol class="steps">
-      <li><div><strong>Instale o Ollama</strong><p>É o programa que roda o cérebro local. Baixe em <a href="https://ollama.com/download/windows" target="_blank" rel="noopener">ollama.com/download/windows</a> e instale normalmente.</p></div></li>
-      <li><div><strong>Baixe o Rafael</strong><p>Clique em "Baixar o Rafael". Vem o arquivo Rafael-Windows.zip, de cerca de 125 MB. Versões anteriores ficam em <a href="https://github.com/imluvingmachne-sys/rafael/releases" target="_blank" rel="noopener">todas as versões</a>.</p></div></li>
+      <li><div><strong>Instale o Ollama</strong><p>É o programa que roda o cérebro local. O botão abre o site oficial do Ollama: baixe e instale normalmente.</p>
+        <a class="br sec step-bt" href="https://ollama.com/download/windows" target="_blank" rel="noopener">BAIXAR O OLLAMA</a></div></li>
+      <li><div><strong>Baixe o Rafael</strong><p>Clique em "Baixar o Rafael". Vem o arquivo Rafael-Windows.zip, de cerca de 135 MB. Versões anteriores ficam em <a href="https://github.com/imluvingmachne-sys/rafael/releases" target="_blank" rel="noopener">todas as versões</a>.</p></div></li>
       <li><div><strong>Extraia e abra o INSTALAR.bat</strong><p>Clique com o botão direito no .zip, escolha "Extrair tudo" e dê dois cliques em INSTALAR.bat. Ele cria o atalho Rafael na Área de Trabalho e baixa o cérebro local (cerca de 5 GB, só na primeira vez).</p></div></li>
       <li><div><strong>Abra pelo atalho Rafael</strong><p>Na primeira vez ele baixa também o reconhecimento de voz (cerca de 480 MB). Depois é só dizer "Rafael".</p></div></li>
     </ol>
